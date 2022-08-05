@@ -77,7 +77,12 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data["success"], True)
+    def test_questions_by_category(self):
+        res = self.client().get("/categories/1/questions")
+        data = json.loads(res.data)
 
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data["success"], False)
 
     def test_questions_by_category(self):
         res = self.client().get("/categories/134567/questions")
@@ -85,8 +90,6 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 404)
         self.assertEqual(data["success"], False)
-
-    
 
     def test_play_quiz(self):
         data = {

@@ -208,7 +208,7 @@ def create_app(test_config=None):
         if category is None:
             abort(404)
             
-        questions = Question.query.filter_by(category = category_id).all()
+        questions = Question.query.filter(Question.category == category_id).all()
         body = request.get_json()
         category = body.get("category", None)
 
@@ -244,14 +244,15 @@ def create_app(test_config=None):
 
         previous_questions = body.get("previous_questions", None)
         category = body.get("quiz_category", None)
-
+        # Return random questions within the given category and shouldn't be part of the previous questions
+        print("categoryyy", category)
         if (previous_questions is None) or  (category is None):
             abort(400)
 
-        if category.id == 0:
-            questions = Question.id.not_in(previous_questions)
-
-        selection = Question.query.filter(category == category).filter(Question.id.in_(previous_questions)).order_by(Question.id).all()
+        if category['id'] == 0:
+            selection = Question.query.filter(Question.id.notin_(previous_questions))
+        else: 
+            selection = Question.query.filter(Question.category == category['id']).filter(Question.id.notin_(previous_questions)).order_by(Question.id).all()
         current_questions = paginate_questions(request, selection)
 
         if len(current_questions) == 0:
@@ -260,7 +261,7 @@ def create_app(test_config=None):
             "success": True,
             'questions': current_questions,
             "total_questions": len(Question.query.all()),
-            "current_category": category.type
+            "current_category": category
         })
 
     """
