@@ -85,6 +85,17 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 400)
         self.assertEqual(res.get_json()["success"], False)
+
+    def test_create_question_405(self):
+        data = {
+            "question": "Who authored the Lies of Locke Lamora?",
+            "answer": "Scott Lynch",
+            "difficulty": "",
+            "category": ""
+        }
+        res = self.client().put("/questions", json=data)
+
+        self.assertEqual(res.status_code, 405)
     
     def test_get_categories(self):
         res = self.client().get("/categories")
