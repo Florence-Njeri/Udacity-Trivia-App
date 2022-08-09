@@ -140,6 +140,10 @@ def create_app(test_config=None):
     def create_question():
         body = request.get_json()
 
+        for question in body.values():
+            if not question:
+                abort(400)
+
         question = body.get("question", None)
         answer = body.get("answer", None)
         category = body.get("category", None)
